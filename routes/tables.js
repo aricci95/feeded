@@ -3,6 +3,13 @@ var router = express.Router();
 var mongoose = require('mongoose')
 var Table = require('../models/table')(mongoose)
 
+
+// TEST
+router.get('/test', function (req, res, next) {
+    res.status(200).send('OK');
+});
+
+
 // List
 router.get('/', async function (req, res, next) {
     const tables = await Table.find()
