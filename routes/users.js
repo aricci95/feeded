@@ -5,14 +5,14 @@ var User = require('../models/user')(mongoose)
 
 // List
 router.get('/', async function (req, res, next) {
-    const users = await User.find()
+    const users = await User.find().select("-password")
     res.json(users)
 });
 
 // View
 router.get('/:id', async function (req, res, next) {
     const id = req.params.id // on récupère la valeure dans l'url
-    const user = await User.findOne({ _id: id }) // on récupère le user grâce à son _id
+    const user = await User.findOne({ _id: id }).select("-password") // on récupère le user grâce à son _id
 
     if (!user) {
         res.status(404).send('Not found');
@@ -26,11 +26,6 @@ router.get('/:id', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
     const { email, firstName, lastName, password, role, active } = req.body;
 
-    // Encrypt password
-    const bcrypt = require('bcryptjs')
-
-    let hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt())
-
     try {
         const user = new User({
             email,
@@ -42,6 +37,9 @@ router.post('/', async function (req, res, next) {
         })
         await user.save()
         console.log('user created.')
+
+        user.password = 'dummy'
+
         res.json(user)
         return
     } catch (error) {
@@ -56,16 +54,18 @@ router.post('/', async function (req, res, next) {
 // Edit
 router.put('/:id', async function (req, res, next) {
     const id = req.params.id
-    const user = await User.findOne({ _id: id }) // on récupere le user pour pouvoir le modifier
+    const user = await User.findOne({ _id: id }).select("-password")
 
     if (!user) {
         res.status(404).send('Not found');
         return
     }
 
-    // on récupère les valeurs potentiellement modifiées
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName
+    const { email, firstName, lastName, password, role, active } = req.body;
+
+    if (email) {
+        user.email = email
+    }
 
     if (firstName) {
         user.firstName = firstName
@@ -75,7 +75,19 @@ router.put('/:id', async function (req, res, next) {
         user.lastName = lastName
     }
 
-    await user.save() // on sauvegarde les modifications
+    if (password) {
+        user.password = password
+    }
+
+    if (role) {
+        user.role = role
+    }
+
+    if (active) {
+        user.active = active
+    }
+
+    await user.save()
 
     res.json(user)
 });
