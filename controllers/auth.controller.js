@@ -1,10 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var User = require('mongoose').model('User');
+var User = require('../models/user.model')
 
-// Login
-router.post('/login', async function (req, res, next) {
-
+exports.loginAction = async function (req, res, next) {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -31,6 +27,4 @@ router.post('/login', async function (req, res, next) {
         res.status(400).send({error:'Authentication failure', message:'invalid password', code: 400});
         return
     }
-});
-
-module.exports = router;
+}

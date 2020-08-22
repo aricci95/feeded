@@ -4,13 +4,12 @@ var logger = require('morgan');
 var cors = require('cors')
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var tablesRouter = require('./routes/tables');
-var authRouter = require('./routes/auth');
+var indexRouter = require('./routes/index.route');
+var usersRouter = require('./routes/user.route');
+var tablesRouter = require('./routes/table.route');
+var authRouter = require('./routes/auth.route');
 
 var app = express();
-
 
 app.use(cors())
 
