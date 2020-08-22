@@ -24,11 +24,11 @@ router.post('/login', async function (req, res, next) {
     const validation = await bcrypt.compare(password, user.password);
 
     if (validation) {
-        res.status(200).send('Authentication successful');
+        res.status(200).send({message: 'Authentication successful', token: user.password, code: 200});
         next()
         return
     } else {
-        res.status(400).send('Authentication failure : invalid password');
+        res.status(400).send({error:'Authentication failure', message:'invalid password', code: 400});
         return
     }
 });
