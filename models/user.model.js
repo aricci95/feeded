@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     role: {
         type: String,
-        default: 'WAITER',
+        default: 'Service',
     },
     active: {
         type: Boolean,

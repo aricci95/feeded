@@ -1,6 +1,6 @@
-var TableService = require('../services/table.service')
+var FoodService = require('../services/food.service')
 var User = require('../models/user.model')
-var Table = require('../models/table.model')
+var Food = require('../models/food.model')
 
 exports.listAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
@@ -11,8 +11,8 @@ exports.listAction = async function (req, res, next) {
     }
 
     try {
-        var tables = await TableService.getAll()
-        return res.status(200).json(tables);
+        var foods = await FoodService.getAll()
+        return res.status(200).json(foods);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
@@ -27,14 +27,14 @@ exports.viewAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.get(req.params.id)
+        var food = await FoodService.get(req.params.id)
 
-        if (!table) {
+        if (!food) {
             res.status(404).send('Not found');
             return
         }
 
-        return res.status(200).json(table);
+        return res.status(200).json(food);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
@@ -49,9 +49,9 @@ exports.createAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.create(req.body)
+        var food = await FoodService.create(req.body)
 
-        return res.status(200).json(table);
+        return res.status(200).json(food);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
@@ -66,9 +66,9 @@ exports.editAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.edit(req.params.id, req.body)
+        var food = await FoodService.edit(req.params.id, req.body)
 
-        return res.status(200).json(table);
+        return res.status(200).json(food);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }
@@ -83,9 +83,9 @@ exports.deleteAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.delete(req.params.id)
+        var food = await FoodService.delete(req.params.id)
 
-        return res.status(200).json(table);
+        return res.status(200).json(food);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
     }

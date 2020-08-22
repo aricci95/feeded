@@ -5,7 +5,7 @@ exports.listAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'ADMIN') {
+    if (!currentUser || currentUser.role != 'Admin') {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -21,7 +21,7 @@ exports.listAction = async function (req, res, next) {
 exports.viewAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'ADMIN') {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'Admin') {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -44,7 +44,7 @@ exports.createAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'ADMIN') {
+    if (!currentUser || currentUser.role != 'Admin') {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -62,7 +62,7 @@ exports.editAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'ADMIN') {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'Admin') {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -80,7 +80,7 @@ exports.deleteAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'ADMIN') {
+    if (!currentUser || currentUser.role != 'Admin') {
         res.status(403).send({ message: 'Forbidden' });
         return
     }

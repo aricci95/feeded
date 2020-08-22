@@ -13,6 +13,10 @@ exports.get = async function (id) {
 exports.create = async function (params) {
     const { email, firstName, lastName, role, active} = params
 
+    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+    lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
+    role = role.charAt(0).toUpperCase() + role.slice(1)
+
     let user = new User({
         email,
         firstName,
@@ -44,11 +48,11 @@ exports.edit = async function (id, params) {
     }
 
     if (firstName) {
-        user.firstName = firstName
+        user.firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
     }
 
     if (lastName) {
-        user.lastName = lastName
+        user.lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
     }
 
     if (password) {
@@ -56,7 +60,7 @@ exports.edit = async function (id, params) {
     }
 
     if (role) {
-        user.role = role
+        user.role = role.charAt(0).toUpperCase() + role.slice(1)
     }
 
     if (active) {

@@ -28,7 +28,7 @@ exports.create = async function (params) {
 exports.edit = async function (id, params) {
     const { number, slots } = params;
 
-    const table = await Table.findOne({ _id: id }).select("-password")
+    const table = await Table.findOne({ _id: id })
 
     if (!table) {
         throw new Error('Table ' + id + ' not found')

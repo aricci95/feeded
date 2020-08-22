@@ -5,8 +5,9 @@ var cors = require('cors')
 
 
 var indexRouter = require('./routes/index.route');
-var usersRouter = require('./routes/user.route');
-var tablesRouter = require('./routes/table.route');
+var userRouter = require('./routes/user.route');
+var tableRouter = require('./routes/table.route');
+var foodRouter = require('./routes/food.route');
 var authRouter = require('./routes/auth.route');
 
 var app = express();
@@ -19,8 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/tables', tablesRouter);
+app.use('/users', userRouter);
+app.use('/tables', tableRouter);
+app.use('/foods', foodRouter);
 app.use('/auth', authRouter);
 
 module.exports = app;
