@@ -10,12 +10,13 @@ exports.get = async function (id) {
     return user;
 }
 
-exports.create = async function (id) {
+exports.create = async function (params) {
+    const { email, firstName, lastName, role, active} = params
+
     let user = new User({
         email,
         firstName,
         lastName,
-        password: hashedPassword,
         role,
         active,
     })

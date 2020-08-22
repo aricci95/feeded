@@ -50,7 +50,7 @@ exports.createAction = async function (req, res, next) {
     }
 
     try {
-        var user = await UserService.create(req.params.id, req.body)
+        var user = await UserService.create(req.body)
 
         return res.status(200).json(user);
     } catch (e) {

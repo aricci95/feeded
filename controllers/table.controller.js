@@ -49,7 +49,7 @@ exports.createAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.create(req.params.id, req.body)
+        var table = await TableService.create(req.body)
 
         return res.status(200).json(table);
     } catch (e) {

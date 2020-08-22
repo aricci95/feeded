@@ -10,7 +10,9 @@ exports.get = async function (id) {
     return table;
 }
 
-exports.create = async function (id) {
+exports.create = async function (params) {
+    const { number, slots } = params
+
     let table = new Table({
         number,
         slots,
