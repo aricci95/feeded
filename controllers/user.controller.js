@@ -5,13 +5,13 @@ exports.listAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'Admin') {
+    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
 
     try {
-        var users = await UserService.getAll()
+        var users = await UserService.getAll(currentUser)
         return res.status(200).json(users);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
@@ -21,7 +21,7 @@ exports.listAction = async function (req, res, next) {
 exports.viewAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'Admin') {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role < global.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -42,18 +42,20 @@ exports.viewAction = async function (req, res, next) {
 
 exports.createAction = async function (req, res, next) {
 
-    const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
+    var currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'Admin') {
+    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
 
     try {
-        var user = await UserService.create(req.body)
+        var user = await UserService.create(req.body, currentUser)
 
         return res.status(200).json(user);
     } catch (e) {
+        console.log(e)
+
         return res.status(400).json({ status: 400, message: e.message });
     }
 }
@@ -62,7 +64,7 @@ exports.editAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role != 'Admin') {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role < global.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -80,7 +82,7 @@ exports.deleteAction = async function (req, res, next) {
 
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role != 'Admin') {
+    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }

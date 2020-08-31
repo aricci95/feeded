@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    restaurantId : {
+        type: Number,
+        required: [true, 'Restaurant Id is required'],
+    },
 });
 
 module.exports = mongoose.model('User', UserSchema);

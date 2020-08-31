@@ -1,7 +1,7 @@
 var Table = require('../models/table.model');
 
-exports.getAll = async function () {
-    let tables = await Table.find()
+exports.getAll = async function (currentUser) {
+    let tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId")
     return tables;
 }
 
@@ -10,12 +10,15 @@ exports.get = async function (id) {
     return table;
 }
 
-exports.create = async function (params) {
+exports.create = async function (params, currentUser) {
     const { number, slots } = params
+
+    let restaurantId = currentUser.restaurantId
 
     let table = new Table({
         number,
         slots,
+        restaurantId,
     })
 
     await table.save()
@@ -28,7 +31,7 @@ exports.create = async function (params) {
 exports.edit = async function (id, params) {
     const { number, slots } = params;
 
-    const table = await Table.findOne({ _id: id })
+    const table = await Table.findOne({ _id: id }).select("-restaurantId")
 
     if (!table) {
         throw new Error('Table ' + id + ' not found')

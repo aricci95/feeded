@@ -1,21 +1,23 @@
 var User = require('../models/user.model');
 
-exports.getAll = async function () {
-    let users = await User.find().select("-password")
+exports.getAll = async function (currentUser) {
+    let users = await User.find({ restaurantId: currentUser.restaurantId }).select("-password -restaurantId")
     return users;
 }
 
 exports.get = async function (id) {
-    let user = await User.findOne({ _id: id }).select("-password")
+    let user = await User.findOne({ _id: id }).select("-password -restaurantId")
     return user;
 }
 
-exports.create = async function (params) {
-    const { email, firstName, lastName, role, active} = params
+exports.create = async function (params, currentUser) {
+    let { email, firstName, lastName, role, active} = params
 
     firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
     lastName = lastName.charAt(0).toUpperCase() + lastName.slice(1)
-    role = role.charAt(0).toUpperCase() + role.slice(1)
+    role = parseInt(role)
+    
+    let restaurantId = currentUser.restaurantId
 
     let user = new User({
         email,
@@ -23,6 +25,7 @@ exports.create = async function (params) {
         lastName,
         role,
         active,
+        restaurantId,
     })
 
     await user.save()
@@ -35,9 +38,9 @@ exports.create = async function (params) {
 }
 
 exports.edit = async function (id, params) {
-    const { email, firstName, lastName, password, role, active } = params;
+    const { email, firstName, lastName, password, role, active, restaurantId } = params;
 
-    const user = await User.findOne({ _id: id }).select("-password")
+    const user = await User.findOne({ _id: id }).select("-password -restaurantId")
 
     if (!user) {
         throw new Error('User ' + id + ' not found')
@@ -60,11 +63,15 @@ exports.edit = async function (id, params) {
     }
 
     if (role) {
-        user.role = role.charAt(0).toUpperCase() + role.slice(1)
+        user.role = parseInt(role)
     }
 
     if (active) {
         user.active = active
+    }
+
+    if (restaurantId) {
+        user.restaurantId = restaurantId
     }
 
     await user.save()

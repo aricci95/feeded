@@ -5,9 +5,10 @@ const TableSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Number is required'],
     },
-    slots: {
+    slots: Number,
+    restaurantId : {
         type: Number,
-        required: [true, 'Slots is required'],
+        required: [true, 'Restaurant Id is required'],
     },
 })
 
