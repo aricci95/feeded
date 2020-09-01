@@ -15,10 +15,7 @@ const FoodSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    restaurantId : {
-        type: Number,
-        required: [true, 'Restaurant Id is required'],
-    },
+    restaurantId : Number,
 })
 
 module.exports = mongoose.model('Food', FoodSchema);

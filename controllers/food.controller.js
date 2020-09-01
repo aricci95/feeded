@@ -24,8 +24,6 @@ exports.searchAction = async function (req, res, next) {
 
     let { label } = url.parse(req.url,true).query
 
-    console.log(label)
-
     if (!currentUser || currentUser.role < global.ROLE_USER) {
         res.status(403).send({ message: 'Forbidden' });
         return

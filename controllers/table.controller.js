@@ -57,6 +57,24 @@ exports.createAction = async function (req, res, next) {
     }
 }
 
+
+exports.addFoodAction = async function (req, res, next) {
+    const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
+
+    if (!currentUser || currentUser.role < global.ROLE_USER) {
+        res.status(403).send({ message: 'Forbidden' });
+        return
+    }
+
+    try {
+        var table = await TableService.addFood(req.params.id, req.body, currentUser)
+
+        return res.status(200).json(table);
+    } catch (e) {
+        return res.status(400).json({ status: 400, message: e.message });
+    }
+}
+
 exports.editAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 

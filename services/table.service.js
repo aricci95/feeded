@@ -52,6 +52,22 @@ exports.edit = async function (id, params) {
     return table;
 }
 
+exports.addFood = async function (id, food, currentUser) {
+    const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+    if (!table) {
+        throw new Error('Table ' + id + ' not found')
+    }
+
+    table.foods.push(food)
+
+    await table.save()
+
+    console.log('Table ' + id + ' updated')
+
+    return table;
+}
+
 exports.delete = async function (id) {
     const result = await Table.deleteOne({ _id: id })
 
