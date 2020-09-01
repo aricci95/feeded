@@ -59,6 +59,10 @@ exports.addFood = async function (id, food, currentUser) {
         throw new Error('Table ' + id + ' not found')
     }
 
+    if (!table.foods) {
+        table.foods = []
+    }
+
     table.foods.push(food)
 
     await table.save()
