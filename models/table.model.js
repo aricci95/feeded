@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 
-var FoodSchema = require('../models/food.model').model('Food').schema;
+var TableFoodSchema = require('../models/tableFood.model').model('TableFood').schema;
 
 const TableSchema = new mongoose.Schema({
     number: {
@@ -12,7 +12,7 @@ const TableSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Restaurant Id is required'],
     },
-    foods: [FoodSchema]
+    foods: [TableFoodSchema]
 })
 
 module.exports = mongoose.model('Table', TableSchema);
