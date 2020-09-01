@@ -1,7 +1,7 @@
 var Table = require('../models/table.model');
 
 exports.getAll = async function (currentUser) {
-    let tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId")
+    let tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId").sort({ number: 'asc' })
     return tables;
 }
 
