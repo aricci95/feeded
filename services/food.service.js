@@ -1,7 +1,16 @@
 var Food = require('../models/food.model');
 
 exports.getAll = async function (currentUser) {
-    let foods = await Food.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId")
+    let foods = await Food.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId").sort({ type: 'desc' })
+    return foods;
+}
+
+exports.search = async function (label, currentUser) {
+    let foods = await Food.find({ restaurantId: currentUser.restaurantId })
+        .select("-restaurantId")
+        .sort({ type: 'desc' })
+        .find({ label: { $regex: '.*' + label + '.*', $options: 'i' } })
+        .limit(5);
     return foods;
 }
 

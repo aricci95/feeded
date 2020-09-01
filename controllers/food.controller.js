@@ -1,4 +1,5 @@
 var FoodService = require('../services/food.service')
+const url = require('url');
 var User = require('../models/user.model')
 var Food = require('../models/food.model')
 
@@ -12,6 +13,26 @@ exports.listAction = async function (req, res, next) {
 
     try {
         var foods = await FoodService.getAll(currentUser)
+        return res.status(200).json(foods);
+    } catch (e) {
+        return res.status(400).json({ status: 400, message: e.message });
+    }
+}
+
+exports.searchAction = async function (req, res, next) {
+    const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
+
+    let { label } = url.parse(req.url,true).query
+
+    console.log(label)
+
+    if (!currentUser || currentUser.role < global.ROLE_USER) {
+        res.status(403).send({ message: 'Forbidden' });
+        return
+    }
+
+    try {
+        var foods = await FoodService.search(label, currentUser)
         return res.status(200).json(foods);
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });

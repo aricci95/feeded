@@ -3,6 +3,7 @@ var router = express.Router();
 var FoodController = require('../controllers/food.controller')
 
 router.get('/',  FoodController.listAction);
+router.get('/search',  FoodController.searchAction);
 router.get('/:id', FoodController.viewAction);
 router.post('/', FoodController.createAction);
 router.put('/:id', FoodController.editAction); 
