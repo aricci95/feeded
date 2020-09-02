@@ -161,7 +161,7 @@ exports.submit = async function (id) {
         }
     }
 
-    let updateTime = Date.now
+    let updateTime = Date.now()
 
     for (var key in table.foods) {
         if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue === smallestValue) {
