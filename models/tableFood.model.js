@@ -25,7 +25,7 @@ const TableFoodSchema = new mongoose.Schema({
     },
     status: {
         type: Number,
-        default: global.PREPARATION_STATUS_PENDING,
+        default: 1, // STATUS_PENDING
     },
 })
 
