@@ -2,39 +2,37 @@ var Table = require('../models/table.model');
 const globals = require('../consts');
 
 exports.getAll = async function (currentUser, filter = null) {
-    let deleteIds = []
-
-    let removeTypes = []
+    let acceptedTypes = []
 
     if (filter === 'food') {
-        removeTypes = ['Boisson']
+        acceptedTypes = ['Starter', 'Plat', 'Dessert']
     } else if (filter === 'bar') {
-        removeTypes = ['Starter', 'Plat', 'Dessert']
+        acceptedTypes = ['Boisson']
     }
 
     tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId").sort({ createdAt: 'asc' })
 
+    let filteredFoods
+
     for (var key in tables) {
+        filteredFoods = []
+
         for (var subKey in tables[key].foods) {
-            if (tables[key].foods[subKey].status != globals.PREPARATION_STATUS_PREPARATION || removeTypes.includes(tables[key].foods[subKey].type)) {
-                tables[key].foods.splice(subKey, 1)
+            if (tables[key].foods[subKey].status === globals.PREPARATION_STATUS_PREPARATION && (acceptedTypes.length === 0 || acceptedTypes.includes(tables[key].foods[subKey].type))) {
+                filteredFoods.push(tables[key].foods[subKey])
             }
         }
+
+        tables[key].foods = filteredFoods
     }
+
+    let filteredTables = []
 
     for (var key in tables) {
-        if (!tables[key].foods || tables[key].foods.length === 0) {
-            deleteIds.push(tables[key].number)
+        if (tables[key].foods && tables[key].foods.length > 0) {
+            filteredTables.push(tables[key])
         }
     }
 
-    for (var index in deleteIds) {
-        for (var key in tables) {
-            if (deleteIds[index] === tables[key].number) {
-                tables.splice(key, 1)
-                break
-            }
-        }
-    }
-    return tables;
+    return filteredTables;
 }
