@@ -1,7 +1,6 @@
 var FoodService = require('../services/food.service')
 const url = require('url');
 var User = require('../models/user.model')
-var Food = require('../models/food.model')
 const globals = require('../consts')
 
 exports.listAction = async function (req, res, next) {

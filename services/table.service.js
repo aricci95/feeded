@@ -78,6 +78,8 @@ exports.addFood = async function (id, food) {
 
     if (!table.foods) {
         table.foods = []
+        table.createdAt = Date.now
+        table.updatedAt = table.createdAt
     }
 
     food.id = table.foods.length + 1
@@ -150,32 +152,6 @@ exports.submit = async function (id) {
         throw new Error('Table ' + id + ' has no food to submit')
     }
 
-    /*
-
-    let foods = []
-    for (var key in typeOrder) {
-        foods.push([])
-    }
-
-    for (var key in table.foods) {
-        let currentFood = table.foods[key]
-
-        let index = currentFood.orderValue - 1
-
-        foods[index].push(currentFood)
-    }
-
-    let foodsToSend = []
-
-    for (var key in typeOrder) {
-        let index = typeOrder[key] - 1 
-
-        if (foods[index].length > 0) {
-            foodsToSend = foods.shift();
-            break
-        }
-    }*/
-
     let smallestValue = 10
 
     for (var key in table.foods) {
@@ -185,9 +161,12 @@ exports.submit = async function (id) {
         }
     }
 
+    let now = Date.now
+
     for (var key in table.foods) {
         if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue === smallestValue) {
             table.foods[key].status = globals.PREPARATION_STATUS_PREPARATION
+            table.updatedAt = now
             console.log('Food ' + table.foods[key].id + ' sent for table ' + id)
         }
     }

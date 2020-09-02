@@ -12,6 +12,14 @@ const TableSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Restaurant Id is required'],
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
     foods: [TableFoodSchema]
 })
 

@@ -1,6 +1,5 @@
 var TableService = require('../services/table.service')
 var User = require('../models/user.model')
-var Table = require('../models/table.model')
 const globals = require('../consts')
 
 exports.listAction = async function (req, res, next) {
