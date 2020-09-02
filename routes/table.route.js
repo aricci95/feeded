@@ -5,8 +5,11 @@ var TableController = require('../controllers/table.controller')
 router.get('/',  TableController.listAction);
 router.get('/:id', TableController.viewAction);
 router.post('/', TableController.createAction);
-router.post('/:id', TableController.addFoodAction);
-router.put('/:id', TableController.editAction); 
+router.put('/:id', TableController.editAction);
 router.delete('/:id', TableController.deleteAction); 
+
+router.post('/:id', TableController.addFoodAction);
+router.put('/:id/:foodId', TableController.editFoodAction); 
+router.delete('/:id/:foodId', TableController.deleteFoodAction); 
 
 module.exports = router;

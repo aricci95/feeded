@@ -52,7 +52,15 @@ exports.edit = async function (id, params) {
     return table;
 }
 
-exports.addFood = async function (id, food, currentUser) {
+exports.delete = async function (id) {
+    const result = await Table.deleteOne({ _id: id })
+
+    console.log('Table ' + id + ' deleted')
+
+    return result;
+}
+
+exports.addFood = async function (id, food) {
     const table = await Table.findOne({ _id: id }).select("-restaurantId")
 
     if (!table) {
@@ -63,6 +71,8 @@ exports.addFood = async function (id, food, currentUser) {
         table.foods = []
     }
 
+    food.id = table.foods.length + 1
+
     table.foods.push(food)
 
     await table.save()
@@ -72,10 +82,48 @@ exports.addFood = async function (id, food, currentUser) {
     return table;
 }
 
-exports.delete = async function (id) {
-    const result = await Table.deleteOne({ _id: id })
+exports.editFood = async function (id, idFood, params) {
+    const { status } = params;
 
-    console.log('Table ' + id + ' deleted')
+    if (!status) {
+        throw new Error('Status is mandatory')
+    }
 
-    return result;
+    const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+    if (!table) {
+        throw new Error('Table ' + id + ' not found')
+    }
+
+    for (var key in table.foods) {
+        if (table.foods[key].id === idFood) {
+            table.foods[key].status = status
+        }
+    }
+
+    await table.save()
+
+    console.log('food ' + idFood + ' status updated from table ' + id )
+
+    return table;
+}
+
+exports.deleteFood = async function (id, idFood) {
+    const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+    if (!table) {
+        throw new Error('Table ' + id + ' not found')
+    }
+
+    for (var key in table.foods) {
+        if (table.foods[key].id === idFood) {
+            table.foods.splice(key, 1)
+        }
+    }
+
+    await table.save()
+
+    console.log('food ' + idFood + ' deleted from table ' + id )
+
+    return table;
 }

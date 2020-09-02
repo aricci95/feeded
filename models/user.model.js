@@ -18,8 +18,8 @@ const UserSchema = new mongoose.Schema({
     lastName: String,
     password: String,
     role: {
-        type: String,
-        default: 'Service',
+        type: Number,
+        default: global.ROLE_USER,
     },
     active: {
         type: Boolean,
