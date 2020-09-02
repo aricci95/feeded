@@ -78,7 +78,7 @@ exports.addFood = async function (id, food) {
 
     if (!table.foods) {
         table.foods = []
-        table.createdAt = Date.now
+        table.createdAt = Date.now()
         table.updatedAt = table.createdAt
     }
 
