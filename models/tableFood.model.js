@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+const globals = require('../consts')
 
 const TableFoodSchema = new mongoose.Schema({
     id: {
@@ -25,7 +26,11 @@ const TableFoodSchema = new mongoose.Schema({
     },
     status: {
         type: Number,
-        default: 1, // STATUS_PENDING
+        default: globals.PREPARATION_STATUS_TODO,
+    },
+    orderValue: {
+        type: Number,
+        default: 1,
     },
 })
 

@@ -6,7 +6,8 @@ router.get('/',  TableController.listAction);
 router.get('/:id', TableController.viewAction);
 router.post('/', TableController.createAction);
 router.put('/:id', TableController.editAction);
-router.delete('/:id', TableController.deleteAction); 
+router.delete('/:id', TableController.deleteAction);
+router.post('/:id/submit', TableController.submitAction);
 
 router.post('/:id', TableController.addFoodAction);
 router.put('/:id/:foodId', TableController.editFoodAction); 

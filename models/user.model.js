@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+const globals = require('../consts')
 
 const UserSchema = new mongoose.Schema({
     email: {
@@ -19,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
     role: {
         type: Number,
-        default: global.ROLE_USER,
+        default: globals.ROLE_USER,
     },
     active: {
         type: Boolean,

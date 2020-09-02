@@ -1,11 +1,12 @@
 var TableService = require('../services/table.service')
 var User = require('../models/user.model')
 var Table = require('../models/table.model')
+const globals = require('../consts')
 
 exports.listAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -21,7 +22,7 @@ exports.listAction = async function (req, res, next) {
 exports.viewAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -43,7 +44,7 @@ exports.viewAction = async function (req, res, next) {
 exports.createAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -60,7 +61,7 @@ exports.createAction = async function (req, res, next) {
 exports.editAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -77,7 +78,7 @@ exports.editAction = async function (req, res, next) {
 exports.deleteAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -94,7 +95,7 @@ exports.deleteAction = async function (req, res, next) {
 exports.addFoodAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role < global.ROLE_ADMIN) {
+    if (!currentUser || currentUser.role > globals.ROLE_ADMIN) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -110,7 +111,7 @@ exports.addFoodAction = async function (req, res, next) {
 exports.editFoodAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser._id === req.params.id || currentUser.role < global.ROLE_USER) {
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role > globals.ROLE_USER) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
@@ -127,13 +128,30 @@ exports.editFoodAction = async function (req, res, next) {
 exports.deleteFoodAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    if (!currentUser || currentUser.role < global.ROLE_USER) {
+    if (!currentUser || currentUser.role > globals.ROLE_USER) {
         res.status(403).send({ message: 'Forbidden' });
         return
     }
 
     try {
         var table = await TableService.deleteFood(req.params.id, req.params.foodId)
+
+        return res.status(200).json(table);
+    } catch (e) {
+        return res.status(400).json({ status: 400, message: e.message });
+    }
+}
+
+exports.submitAction = async function (req, res, next) {
+    const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
+
+    if (!currentUser || currentUser._id === req.params.id || currentUser.role > globals.ROLE_USER) {
+        res.status(403).send({ message: 'Forbidden' });
+        return
+    }
+
+    try {
+        var table = await TableService.submit(req.params.id)
 
         return res.status(200).json(table);
     } catch (e) {
