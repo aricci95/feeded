@@ -161,12 +161,12 @@ exports.submit = async function (id) {
         }
     }
 
-    let now = Date.now
+    let updateTime = Date.now
 
     for (var key in table.foods) {
         if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue === smallestValue) {
             table.foods[key].status = globals.PREPARATION_STATUS_PREPARATION
-            table.updatedAt = now
+            table.updatedAt = updateTime
             console.log('Food ' + table.foods[key].id + ' sent for table ' + id)
         }
     }
