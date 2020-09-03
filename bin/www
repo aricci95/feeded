@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-require('dotenv').config({path: __dirname + '/.env'})
+require('dotenv').config({ path: __dirname + '/.env' })
 
 /**
  * Module dependencies.
@@ -38,6 +38,23 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+// Chargement de socket.io
+var io = require('socket.io').listen(server);
+
+// Quand un client se connecte, on le note dans la console
+io.sockets.on('connection', function (socket) {
+  console.log('Un client est connecté !');
+  socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
+
+  socket.on('email', function (email) {
+    socket.email = email;
+  });
+
+  socket.on('message', function (message) {
+    console.log(socket.email + ' me parle ! Il me dit : ' + message);
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
