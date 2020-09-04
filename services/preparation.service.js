@@ -51,7 +51,7 @@ module.exports = function (io) {
         for (var key in table.foods) {
             if (foodIds.includes(table.foods[key].id)) {
                 if (status === globals.PREPARATION_STATUS_DONE && table.foods[key].status != globals.PREPARATION_STATUS_PREPARATION) {
-                    //throw new Error('Preparation : cannot update from status ' + table.foods[key].status + ' to ' + status)
+                    throw new Error('Preparation : cannot update from status ' + table.foods[key].status + ' to ' + status)
                 }
 
                 table.foods[key].status = status
@@ -59,13 +59,11 @@ module.exports = function (io) {
                 requiresUpdate = true
             }
         }
-
+        
         if (requiresUpdate) {
             await table.save()
 
-            io.sockets.on('connection', function (socket) {
-                socket.emit('message', { content: 'Food is ready !', importance: '1' });
-            });
+            io.sockets.emit('message', { content: 'Food is ready !', importance: '1' });
 
             console.log('Table ' + tableId + ' food status updated to ' + status)
         }
