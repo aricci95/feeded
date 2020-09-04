@@ -6,7 +6,7 @@ const globals = require('../consts')
 exports.listAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
 
-    let { filter } = url.parse(req.url,true).query
+    let { filter } = url.parse(req.url, true).query
 
     if (!currentUser || currentUser.role > globals.ROLE_USER) {
         res.status(403).send({ message: 'Forbidden' });
@@ -21,8 +21,10 @@ exports.listAction = async function (req, res, next) {
     }
 }
 
-exports.editAction = async function (req, res, next) {
+exports.updateStatusAction = async function (req, res, next) {
     const currentUser = await User.findOne({ email: req.headers.email, password: req.headers.token })
+
+    let { status, foodIds } = req.body
 
     if (!currentUser || currentUser._id === req.params.id || currentUser.role > globals.ROLE_USER) {
         res.status(403).send({ message: 'Forbidden' });
@@ -30,7 +32,7 @@ exports.editAction = async function (req, res, next) {
     }
 
     try {
-        var table = await TableService.edit(req.params.id, req.body)
+        var table = await PreparationService.updateStatus(req.params.id, foodIds, status)
 
         return res.status(200).json(table);
     } catch (e) {

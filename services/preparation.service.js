@@ -36,3 +36,27 @@ exports.getAll = async function (currentUser, filter = null) {
 
     return filteredTables;
 }
+
+exports.updateStatus = async function (tableId, foodIds, status) {
+    table = await Table.findOne({ _id: tableId }).select("-restaurantId")
+
+    if (!table) {
+        throw new Error('Table ' + id + ' not found')
+    }
+
+    for (var key in table.foods) {
+        if (foodIds.includes(table.foods[key].id)) {
+            if (status === globals.PREPARATION_STATUS_DONE && table.foods[key].status != globals.PREPARATION_STATUS_PREPARATION) {
+                throw new Error('Preparation : cannot update from status ' + table.foods[key].status + ' to ' + status)
+            }
+
+            table.foods[key].status = status
+        }
+    }
+
+    await table.save()
+
+    console.log('Table ' + tableId + ' food status updated to ' + status)
+
+    return table;
+}
