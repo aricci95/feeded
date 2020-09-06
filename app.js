@@ -51,10 +51,9 @@ var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
 // Quand un client se connecte, on le note dans la console
+/*
 io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
-    socket.emit('message', { content: 'Vous êtes bien connecté !', importance: '1' });
-
     socket.on('email', function (email) {
         socket.email = email;
     });
@@ -63,6 +62,7 @@ io.sockets.on('connection', function (socket) {
         console.log(socket.email + ' me parle ! Il me dit : ' + message);
     });
 });
+*/
 
 app.use('/', require('./routes/index.route'));
 app.use('/users', require('./routes/user.route'));

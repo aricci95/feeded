@@ -5,6 +5,13 @@ module.exports = function (io) {
 
     module.getAll = async function (currentUser, filter = null) {
         let acceptedTypes = []
+        io.sockets.emit('notification', {
+            type: 1,
+            message: 'La table  est prête.',
+            restaurantId: 1,
+        });
+
+        console.log('message emitted')
 
         if (filter === 'food') {
             acceptedTypes = ['Starter', 'Plat', 'Dessert']
