@@ -1,179 +1,193 @@
-var Table = require('../models/table.model');
+module.exports = function (io) {
+    var module = {}
+    var Table = require('../models/table.model');
+    const globals = require('../consts');
 
-const globals = require('../consts')
-
-const typeOrder = {
-    'Starter': 1,
-    'Boisson': 1,
-    'Plat': 2,
-    'Dessert': 3,
-}
-
-exports.getAll = async function (currentUser) {
-    let tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId").sort({ number: 'asc' })
-    return tables;
-}
-
-exports.get = async function (id) {
-    let table = await Table.findOne({ _id: id })
-    return table;
-}
-
-exports.create = async function (params, currentUser) {
-    const { number, slots } = params
-
-    let restaurantId = currentUser.restaurantId
-
-    let table = new Table({
-        number,
-        slots,
-        restaurantId,
-    })
-
-    await table.save()
-
-    console.log('table created.')
-
-    return table;
-}
-
-exports.edit = async function (id, params) {
-    const { number, slots } = params;
-
-    const table = await Table.findOne({ _id: id }).select("-restaurantId")
-
-    if (!table) {
-        throw new Error('Table ' + id + ' not found')
+    const typeOrder = {
+        'Starter': 1,
+        'Boisson': 1,
+        'Plat': 2,
+        'Dessert': 3,
     }
 
-    if (number) {
-        table.number = number
+    module.getAll = async function (currentUser) {
+        let tables = await Table.find({ restaurantId: currentUser.restaurantId }).select("-restaurantId").sort({ number: 'asc' })
+        return tables;
     }
 
-    if (slots) {
-        table.slots = slots
+    module.get = async function (id) {
+        let table = await Table.findOne({ _id: id })
+        return table;
     }
 
-    await table.save()
+    module.create = async function (params, currentUser) {
+        const { number, slots } = params
 
-    console.log('Table ' + id + ' edited')
+        let restaurantId = currentUser.restaurantId
 
-    return table;
-}
+        let table = new Table({
+            number,
+            slots,
+            restaurantId,
+        })
 
-exports.delete = async function (id) {
-    const result = await Table.deleteOne({ _id: id })
+        await table.save()
 
-    console.log('Table ' + id + ' deleted')
+        console.log('table created.')
 
-    return result;
-}
-
-exports.addFood = async function (id, food) {
-    const table = await Table.findOne({ _id: id }).select("-restaurantId")
-
-    if (!table) {
-        throw new Error('Table ' + id + ' not found')
+        return table;
     }
 
-    if (!table.foods) {
-        table.foods = []
-        table.createdAt = Date.now()
-        table.updatedAt = table.createdAt
-    }
+    module.edit = async function (id, params) {
+        const { number, slots } = params;
 
-    food.id = table.foods.length + 1
+        const table = await Table.findOne({ _id: id }).select("-restaurantId")
 
-    food.orderValue = typeOrder[food.type]
-
-    table.foods.push(food)
-
-    await table.save()
-
-    console.log('Table ' + id + ' updated')
-
-    return table;
-}
-
-exports.editFood = async function (id, idFood, params) {
-    const { status } = params;
-
-    if (!status) {
-        throw new Error('Status is mandatory')
-    }
-
-    const table = await Table.findOne({ _id: id }).select("-restaurantId")
-
-    if (!table) {
-        throw new Error('Table ' + id + ' not found')
-    }
-
-    for (var key in table.foods) {
-        if (table.foods[key].id === idFood) {
-            table.foods[key].status = status
+        if (!table) {
+            throw new Error('Table ' + id + ' not found')
         }
-    }
 
-    await table.save()
-
-    console.log('food ' + idFood + ' status updated from table ' + id)
-
-    return table;
-}
-
-exports.deleteFood = async function (id, idFood) {
-    const table = await Table.findOne({ _id: id }).select("-restaurantId")
-
-    if (!table) {
-        throw new Error('Table ' + id + ' not found')
-    }
-
-    for (var key in table.foods) {
-        if (table.foods[key].id === idFood) {
-            table.foods.splice(key, 1)
+        if (number) {
+            table.number = number
         }
-    }
 
-    await table.save()
-
-    console.log('food ' + idFood + ' deleted from table ' + id)
-
-    return table;
-}
-
-exports.submit = async function (id) {
-    const table = await Table.findOne({ _id: id }).select("-restaurantId")
-
-    if (!table) {
-        throw new Error('Table ' + id + ' not found')
-    }
-
-    if (!table.foods) {
-        throw new Error('Table ' + id + ' has no food to submit')
-    }
-
-    let smallestValue = 10
-
-    for (var key in table.foods) {
-        if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue < smallestValue) {
-            console.log('OK')
-            smallestValue = table.foods[key].orderValue
+        if (slots) {
+            table.slots = slots
         }
+
+        await table.save()
+
+        console.log('Table ' + id + ' edited')
+
+        return table;
     }
 
-    let updateTime = Date.now()
+    module.delete = async function (id) {
+        const result = await Table.deleteOne({ _id: id })
 
-    for (var key in table.foods) {
-        if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue === smallestValue) {
-            table.foods[key].status = globals.PREPARATION_STATUS_PREPARATION
-            table.updatedAt = updateTime
-            console.log('Food ' + table.foods[key].id + ' sent for table ' + id)
+        console.log('Table ' + id + ' deleted')
+
+        return result;
+    }
+
+    module.addFood = async function (id, food) {
+        const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+        if (!table) {
+            throw new Error('Table ' + id + ' not found')
         }
+
+        if (!table.foods) {
+            table.foods = []
+            table.createdAt = Date.now()
+            table.updatedAt = table.createdAt
+        }
+
+        food.id = table.foods.length + 1
+
+        food.orderValue = typeOrder[food.type]
+
+        table.foods.push(food)
+
+        await table.save()
+
+        console.log('Table ' + id + ' updated')
+
+        return table;
     }
 
-    await table.save()
+    module.editFood = async function (id, idFood, params) {
+        const { status } = params;
 
-    console.log('Successfully submitted food to preparation for table ' + id)
+        if (!status) {
+            throw new Error('Status is mandatory')
+        }
 
-    return table;
+        const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+        if (!table) {
+            throw new Error('Table ' + id + ' not found')
+        }
+
+        for (var key in table.foods) {
+            if (table.foods[key].id === idFood) {
+                table.foods[key].status = status
+            }
+        }
+
+        await table.save()
+
+        console.log('food ' + idFood + ' status updated from table ' + id)
+
+        return table;
+    }
+
+    module.deleteFood = async function (id, idFood) {
+        const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+        if (!table) {
+            throw new Error('Table ' + id + ' not found')
+        }
+
+        for (var key in table.foods) {
+            if (table.foods[key].id === idFood) {
+                table.foods.splice(key, 1)
+            }
+        }
+
+        await table.save()
+
+        console.log('food ' + idFood + ' deleted from table ' + id)
+
+        return table;
+    }
+
+    module.submit = async function (id) {
+        const table = await Table.findOne({ _id: id }).select("-restaurantId")
+
+        if (!table) {
+            throw new Error('Table ' + id + ' not found')
+        }
+
+        if (!table.foods) {
+            throw new Error('Table ' + id + ' has no food to submit')
+        }
+
+        let smallestValue = 10
+
+        for (var key in table.foods) {
+            if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue < smallestValue) {
+                console.log('OK')
+                smallestValue = table.foods[key].orderValue
+            }
+        }
+
+        let updateTime = Date.now()
+        let hasNewFood = false
+
+        for (var key in table.foods) {
+            if (table.foods[key].status === globals.PREPARATION_STATUS_TODO && table.foods[key].orderValue === smallestValue) {
+                table.foods[key].status = globals.PREPARATION_STATUS_PREPARATION
+                table.updatedAt = updateTime
+                console.log('Food ' + table.foods[key].id + ' sent for table ' + id)
+                hasNewFood = true
+            }
+        }
+
+        if (hasNewFood) {
+            io.sockets.emit('notification', {
+                type: globals.NOTIFICATION_TYPE_FOOD_SUBMITTED,
+                message: 'La table ' + table.number + ' a une nouvelle commande.',
+                restaurantId: table.restaurantId,
+            });
+
+            await table.save()
+
+            console.log('Successfully submitted food to preparation for table ' + id)
+        }
+
+        return table;
+    }
+
+    return module
 }

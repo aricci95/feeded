@@ -59,11 +59,15 @@ module.exports = function (io) {
                 requiresUpdate = true
             }
         }
-        
+
         if (requiresUpdate) {
             await table.save()
 
-            io.sockets.emit('message', { content: 'Food is ready !', importance: '1' });
+            io.sockets.emit('notification', {
+                type: globals.NOTIFICATION_TYPE_FOOD_READY,
+                message: 'La table ' + table.number + ' est prête.',
+                restaurantId: table.restaurantId,
+            });
 
             console.log('Table ' + tableId + ' food status updated to ' + status)
         }

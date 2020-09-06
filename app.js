@@ -66,8 +66,8 @@ io.sockets.on('connection', function (socket) {
 
 app.use('/', require('./routes/index.route'));
 app.use('/users', require('./routes/user.route'));
-app.use('/tables', require('./routes/table.route'));
-app.use('/foods', require('./routes/food.route'));
+app.use('/tables', require('./routes/table.route')(io));
+app.use('/foods', require('./routes/food.route')(io));
 app.use('/preparations', require('./routes/preparation.route')(io));
 app.use('/auth', require('./routes/auth.route'));
 
